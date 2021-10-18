@@ -1,4 +1,9 @@
 body {
-  width: 100px;
+  width: 150px;
   text-align: center;
+  font-size: 20px;
+}
+
+#buttons {
+  color: crimson;
 }

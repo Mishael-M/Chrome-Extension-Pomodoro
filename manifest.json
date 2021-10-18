@@ -7,6 +7,7 @@
         "service_worker": "background.js"
     },
     "action": {
+        "default_title": "Show time",
         "default_popup": "popup.html",
         "default_icon": {
             "16": "/images/icon16.png",
@@ -16,6 +17,9 @@
           }
     },
     "permissions": [
-        "storage"
-    ]
+        "storage",
+        "alarms",
+        "scripting"
+    ],
+    "host_permissions":  ["<all_urls>"]
 }
