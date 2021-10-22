@@ -1,8 +1,6 @@
 // background.js
 
 chrome.runtime.onInstalled.addListener(() => {
-  // Global variables that save the state of the timer
-  var countdownTimer;
   // Countdown starts at 25 minutes
   var distanceTime = 1000 * 25 * 60;
 
@@ -16,7 +14,6 @@ chrome.runtime.onInstalled.addListener(() => {
   var timerType = 'pomodoro';
 
   // Sets background state of values
-  chrome.storage.local.set({ countdownTimer });
   chrome.storage.local.set({ distanceTime: distanceTime });
   chrome.storage.local.set({ startFlag: startFlag });
   chrome.storage.local.set({ timerType: timerType });
@@ -63,6 +60,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     setTimeout(keepAliveForced, 295e3); // 5 minutes minus 5 seconds
     port.onDisconnect.addListener(keepAliveForced);
   }
+  console.assert(port.name === 'Pomodoro');
   port.onMessage.addListener(function (msg) {
     globalPort = port;
     // Starts the timer as the start button was pressed
@@ -81,7 +79,6 @@ chrome.runtime.onConnect.addListener(function (port) {
           chrome.storage.local.get('timerType', (result) => {
             if (result.timerType == 'break') {
               chrome.storage.local.get('breakTimer', (result) => {
-                globalTimerType = result.timerType;
                 distanceTimeGlobal = result.breakTimer;
                 countdownDriver(distanceTimeGlobal);
               });
@@ -196,23 +193,27 @@ function countdownStart(countdown) {
             // If the count down is over, write some text
             if (distanceTimeGlobal < 0) {
               clearInterval(intervalTimer);
-              chrome.storage.local.set({ startFlag: false }, () => {
-                distanceTimeGlobal = 0;
-                chrome.storage.local.set(
-                  { breakTimer: distanceTimeGlobal },
-                  () => {
-                    timesStarted = 0;
-                    timesPaused = 0;
-                    console.log(
-                      'Distance time is set to ' + distanceTimeGlobal
-                    );
-                    chrome.storage.local.set({ timerType: 'pomodoro' }, () => {
-                      console.log('Timer set to pomodoro');
-                      globalPort.postMessage({ response: 'expired' });
+              distanceTimeGlobal = 25 * 1000 * 60;
+              // Ensure timers are up to date
+              chrome.storage.local.set(
+                {
+                  startFlag: false,
+                  distanceTime: distanceTimeGlobal,
+                  breakTimer: 5 * 1000 * 60,
+                },
+                () => {
+                  timesStarted = 0;
+                  timesPaused = 0;
+                  console.log('Distance time is set to ' + distanceTimeGlobal);
+                  chrome.storage.local.set({ timerType: 'pomodoro' }, () => {
+                    console.log('Timer set to pomodoro');
+                    chrome.action.setTitle({
+                      title: 0 + 'h ' + 25 + 'm ' + 0 + 's ',
                     });
-                  }
-                );
-              });
+                    globalPort.postMessage({ response: 'expired' });
+                  });
+                }
+              );
             }
           }
         });
@@ -235,23 +236,27 @@ function countdownStart(countdown) {
             // If the count down is over, write some text
             if (distanceTimeGlobal < 0) {
               clearInterval(intervalTimer);
-              chrome.storage.local.set({ startFlag: false }, () => {
-                distanceTimeGlobal = 0;
-                chrome.storage.local.set(
-                  { distanceTime: distanceTimeGlobal },
-                  () => {
-                    timesStarted = 0;
-                    timesPaused = 0;
-                    console.log(
-                      'Distance time is set to ' + distanceTimeGlobal
-                    );
-                    chrome.storage.local.set({ timerType: 'break' }, () => {
-                      console.log('Timer set to break');
-                      globalPort.postMessage({ response: 'expired' });
+              distanceTimeGlobal = 5 * 1000 * 60;
+              // Ensure timers are up to date
+              chrome.storage.local.set(
+                {
+                  startFlag: false,
+                  breakTimer: distanceTimeGlobal,
+                  distanceTime: 25 * 1000 * 60,
+                },
+                () => {
+                  timesStarted = 0;
+                  timesPaused = 0;
+                  console.log('Distance time is set to ' + distanceTimeGlobal);
+                  chrome.storage.local.set({ timerType: 'break' }, () => {
+                    console.log('Timer set to break');
+                    chrome.action.setTitle({
+                      title: 0 + 'h ' + 5 + 'm ' + 0 + 's ',
                     });
-                  }
-                );
-              });
+                    globalPort.postMessage({ response: 'expired' });
+                  });
+                }
+              );
             }
           }
         });
@@ -271,7 +276,3 @@ function updateTimer(distanceTime) {
   minutes = Math.floor((distanceTime % (1000 * 60 * 60)) / (1000 * 60));
   seconds = Math.floor((distanceTime % (1000 * 60)) / 1000);
 }
-
-/*
-Break Timer
-*/
