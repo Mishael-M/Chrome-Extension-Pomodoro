@@ -138,6 +138,13 @@ function resetTimer() {
   });
 }
 
+// Changes html file to Notes
+buttonNotes.addEventListener('click', () => {
+  location.href = '/popupNotes/popupNotes.html';
+  chrome.action.setTitle({ title: 'Notes' });
+  chrome.action.setPopup({ popup: '/popupNotes/popupNotes.html' });
+});
+
 // Send messages to background
 function sendMessageStart() {
   if (!port) {
