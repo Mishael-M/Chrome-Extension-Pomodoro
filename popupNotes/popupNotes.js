@@ -10,7 +10,7 @@ buttonTimer.addEventListener('click', () => {
 /**
  * Copied from W3Schools
  */
-// Add a "checked" symbol when clicking on a list item
+// Create todo task from input
 addButton.addEventListener('click', () => {
   var li = document.createElement('li');
   var inputValue = document.getElementById('taskInput').value;
@@ -46,12 +46,14 @@ addButton.addEventListener('click', () => {
   for (let index = 0; index < editButton.length; index++) {
     editButton[index].onclick = () => {
       let editNew = prompt('Enter the new task: ', 'Enter Task Here...');
-      t.nodeValue = editNew;
+      if (editNew != null) {
+        t.nodeValue = editNew;
+      }
     };
   }
 });
 
-// Create a "close" button and append it to each list item
+// Create a "close" and "edit" button and append it to each list item
 var myNodelist = document.getElementsByTagName('LI');
 var i;
 for (i = 0; i < myNodelist.length; i++) {
@@ -59,6 +61,10 @@ for (i = 0; i < myNodelist.length; i++) {
   var txt = document.createTextNode('\u00D7');
   span.className = 'close';
   span.appendChild(txt);
+  var edit = document.createElement('BUTTON');
+  edit.innerText = 'Edit';
+  edit.className = 'edit';
+  li.appendChild(edit);
   myNodelist[i].appendChild(span);
 }
 
@@ -78,7 +84,9 @@ for (let index = 0; index < editButton.length; index++) {
   editButton[index].onclick = () => {
     const div = this.parentElement;
     let editNew = prompt('Enter the new task: ', 'Enter Task Here...');
-    div.t.nodeValue = editNew;
+    if (editNew != null) {
+      div.t.nodeValue = editNew;
+    }
   };
 }
 
