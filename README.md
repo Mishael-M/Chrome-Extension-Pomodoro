@@ -1,2 +1,2 @@
 # Chrome-Extension-Pomodoro
-The chrome extensionis a timer based off the pomodoro technique.
+The chrome extension is a timer based off the pomodoro technique.
