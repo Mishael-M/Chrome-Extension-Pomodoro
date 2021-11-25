@@ -117,6 +117,8 @@ buttonTimerType.addEventListener('click', () => {
   });
 });
 
+// TODO Popup WINDOW FOR EDITING TIME
+
 // Resets timers to original values
 buttonReset.addEventListener('click', () => {
   resetTimer();

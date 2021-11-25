@@ -7,6 +7,8 @@ buttonTimer.addEventListener('click', () => {
   chrome.action.setPopup({ popup: '../popup.html' });
 });
 
+// TODO popup WINDOW FOR EDITING TIME
+
 /**
  * Copied from W3Schools
  */
